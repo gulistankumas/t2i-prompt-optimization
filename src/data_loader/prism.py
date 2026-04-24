@@ -2,9 +2,16 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
+
 import pandas as pd
 
-PRISM_CSV_PATH = Path(__file__).resolve().parents[2] / "data" / "raw" / "prism_bench_gpt41_english.csv"
+_DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "raw"
+
+PRISM_FILES = {
+    "gpt41": _DATA_DIR / "prism_bench_gpt41_english.csv",
+    "qwen25vl": _DATA_DIR / "prism_bench_qwen25vl_english.csv",
+}
 
 PRISM_TRACKS = [
     "imagination",
@@ -28,12 +35,17 @@ TARGET_MODELS_IN_PRISM = [
 ]
 
 
-def load_prism_gpt41_english() -> pd.DataFrame:
-    df = pd.read_csv(PRISM_CSV_PATH)
+def load_prism(judge: Literal["gpt41", "qwen25vl"] = "gpt41") -> pd.DataFrame:
+    path = PRISM_FILES[judge]
+    df = pd.read_csv(path)
     assert set(PRISM_TRACKS).issubset(df.columns), f"Missing track columns: {set(PRISM_TRACKS) - set(df.columns)}"
     assert "overall" in df.columns
     assert "model" in df.columns
     return df
+
+
+def load_prism_gpt41_english() -> pd.DataFrame:
+    return load_prism("gpt41")
 
 
 def filter_target_models(df: pd.DataFrame) -> pd.DataFrame:
@@ -44,8 +56,7 @@ def filter_target_models(df: pd.DataFrame) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    df = load_prism_gpt41_english()
-    print(f"Loaded {len(df)} models, {len(PRISM_TRACKS)} tracks")
-    targets = filter_target_models(df)
-    print(f"\nTarget models ({len(targets)}):")
-    print(targets.to_string(index=False))
+    for judge in ("gpt41", "qwen25vl"):
+        df = load_prism(judge)
+        tgt = filter_target_models(df)
+        print(f"[{judge}] {len(df)} models loaded, {len(tgt)} target models, overall range {tgt['overall'].min():.1f}-{tgt['overall'].max():.1f}")
