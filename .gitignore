@@ -19,13 +19,17 @@ ENV/
 .ipynb_checkpoints/
 *.nbconvert.ipynb
 
-# Data (raw downloads are reproducible; processed is tracked selectively)
+# Data (büyük/ağır dosyalar ignore; benchmark skorları ve notlar tracked)
 data/raw/*
 !data/raw/.gitkeep
+!data/raw/*.md
+!data/raw/*.csv
+!data/raw/*.tsv
+!data/raw/*.yaml
 data/processed/*
 !data/processed/.gitkeep
-# Teknik notlar (inventory, coverage analizi) git'te kalır; sadece ham/büyük veri ignore edilir
 !data/processed/*.md
+!data/processed/*.csv
 
 # External repos (HEIM, PRISM clones — too large, reproducible via clone)
 external/

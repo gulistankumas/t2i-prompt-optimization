@@ -60,9 +60,11 @@ HEIM ve PRISM-Bench gibi çoklu-model değerlendirme dataset'leri mevcut, ancak 
 
 ### 3. Prompt Sınıflandırma
 
-**12 Kategori (PartiPrompts'tan):** artifacts, animals, indoor scenes, produce/plants, abstract, arts, food, vehicles, illustrations, outdoor scenes, people, world knowledge
+**Birincil eksen: PRISM-Bench'in 7 track'i.** Modeller PRISM'de bu track'ler üzerinde skorlanmış olduğu için lookup tablo doğrudan (track, model) → skor olarak kurulur; ek kategori çevrimi/normalize gerekmez. 7 track'in ne olduğu Gün 2'de veri yapısından netleşecek.
 
-**Yöntem:** LLM API ile (Claude Haiku veya GPT-4o-mini). Prompt gönderilir, kategori döner. Ucuz (<$0.001/prompt), hızlı (1-2 saniye).
+**Yan validasyon ekseni: PartiPrompts 12 kategori** — artifacts, animals, indoor scenes, produce/plants, abstract, arts, food, vehicles, illustrations, outdoor scenes, people, world knowledge. Rolü: LLM'in PRISM track atamasının tutarlılığını çapraz kontrol etmek (ör: "people" kategorisindeki prompt'lar hangi PRISM track'lerine düşüyor? Dağılım makul mü?) ve router için held-out evaluation set sağlamak.
+
+**Yöntem:** LLM API ile (Claude Haiku veya GPT-4o-mini). Prompt gönderilir → PRISM track kararı (ana) + PartiPrompts kategori etiketi (validasyon). Ucuz (<$0.001/prompt), hızlı (1-2 saniye).
 
 ### 4. Router (3 Yaklaşım Karşılaştırılacak)
 
