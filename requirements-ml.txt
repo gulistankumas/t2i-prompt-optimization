@@ -1,0 +1,9 @@
+# ML router (Hafta 2 — SBERT embedding, XGBoost, scikit-learn)
+# Kurulum: pip install -r requirements-ml.txt
+# Not: torch ~800MB, sentence-transformers ilk import'ta model indirir
+sentence-transformers>=2.7
+scikit-learn>=1.3
+xgboost>=2.0
+
+# Demo (Hafta 3)
+streamlit>=1.30

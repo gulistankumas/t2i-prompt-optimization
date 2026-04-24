@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual env
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# Data (raw downloads are reproducible; processed is tracked selectively)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# External repos (HEIM, PRISM clones — too large, reproducible via clone)
+external/
+
+# Figures (generated, but keep final ones)
+figures/*.png
+figures/*.pdf
+!figures/.gitkeep
+
+# Secrets
+.env
+.env.local
+*.key
+credentials.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Model checkpoints (Alt-B)
+*.safetensors
+*.bin
+*.pt
+*.pth
+checkpoints/

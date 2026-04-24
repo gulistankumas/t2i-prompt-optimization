@@ -1,0 +1,16 @@
+# Core (Hafta 1 — veri + analiz + LLM kategorizasyon)
+pandas>=2.0
+numpy>=1.24
+requests>=2.31
+pyyaml>=6.0
+python-dotenv>=1.0
+tqdm>=4.66
+
+# Notebooks + plot
+jupyter>=1.0
+matplotlib>=3.7
+seaborn>=0.12
+
+# LLM APIs (kategorizasyon + LLM router)
+anthropic>=0.40
+openai>=1.50
