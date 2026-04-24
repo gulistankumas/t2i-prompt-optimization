@@ -24,6 +24,8 @@ data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
+# Teknik notlar (inventory, coverage analizi) git'te kalır; sadece ham/büyük veri ignore edilir
+!data/processed/*.md
 
 # External repos (HEIM, PRISM clones — too large, reproducible via clone)
 external/

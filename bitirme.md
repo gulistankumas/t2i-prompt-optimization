@@ -14,7 +14,7 @@
 
 ## Tek Cümlelik Özet
 
-Kullanıcı bir prompt girer, sistem o prompt için 8 T2I modelinden hangisinin en iyi kalite-maliyet dengesini sunacağını **görsel üretmeden önce** tahmin eder ve önerir.
+Kullanıcı bir prompt girer, sistem o prompt için 9 T2I modelinden hangisinin en iyi kalite-maliyet dengesini sunacağını **görsel üretmeden önce** tahmin eder ve önerir.
 
 ---
 
@@ -40,21 +40,23 @@ HEIM ve PRISM-Bench gibi çoklu-model değerlendirme dataset'leri mevcut, ancak 
 
 **Neden hazır dataset:** Görsel üretim maliyetli ve 1 ayda mümkün değil. Bu akademik dataset'ler zaten görselleri üretip değerlendirmiş, skorları kullanacağız.
 
-### 2. Model Havuzu (8 Model)
+### 2. Model Havuzu (9 Model)
 
-**Açık Kaynak (5):**
-- Stable Diffusion 1.5 (eski nesil, ucuz, hızlı - baseline)
-- SDXL (2023-2024 standardı, orta segment)
-- Stable Diffusion 3.5 Large (modern Stability AI modeli)
-- FLUX.1-dev (açık kaynak lideri, fotogerçekçi)
-- Qwen-Image (metin rendering ve kompozisyon)
-
-**Kapalı Kaynak (3):**
-- DALL-E 2 (tarihsel öncü, HEIM'de insan skorları var)
-- GPT-Image-1 (OpenAI'nin son modeli, PRISM'de lider)
-- Gemini 2.5 Flash-Image (Google modeli, duygu aktarımı)
+| # | Model | Ana Skor Kaynağı | Kategori |
+|---|-------|:----------------:|----------|
+| 1 | Stable Diffusion 1.5 | PRISM (+ HEIM köprü) | Eski nesil, ucuz, baseline |
+| 2 | SDXL | PRISM | 2023-2024 orta segment |
+| 3 | Stable Diffusion 3.5 Large | PRISM | Modern açık kaynak |
+| 4 | FLUX.1-schnell | PRISM | Ucuz, hızlı, modern |
+| 5 | FLUX.1-dev | PRISM | Premium açık kaynak |
+| 6 | Qwen-Image | PRISM | Yeni, metin-kompozisyon |
+| 7 | DALL-E 2 | HEIM → PRISM'e projekte | Kapalı kaynak pioneer |
+| 8 | GPT-Image-1 | PRISM | Modern premium kapalı |
+| 9 | Gemini 2.5 Flash-Image | PRISM | Alternatif premium kapalı |
 
 **Çeşitlilik boyutları:** açık/kapalı, eski/yeni, ucuz/pahalı
+
+**Skor kaynağı stratejisi:** Master tablo PRISM ölçeğinde kurulur. SD 1.5 her iki benchmark'ta da değerlendirildiği için **köprü modeli** rolünü oynar; HEIM↔PRISM ölçek eşlemesi bu modelin iki skoru üzerinden öğrenilir ve sadece HEIM'da olan DALL-E 2'yi PRISM ölçeğine projekte etmek için kullanılır. Detay: [data/processed/coverage_matrix.md](data/processed/coverage_matrix.md).
 
 ### 3. Prompt Sınıflandırma
 
@@ -140,7 +142,7 @@ Router'ın üstünlüğünü kanıtlamak için:
 - GitHub proje repo'su aç, klasör yapısını kur
 - Python environment kur, kütüphaneleri yükle
 - HEIM GitHub repo'sunu klonla, dokümantasyonu oku
-- 8 modelinden hangilerinin HEIM'de olduğunu tespit et
+- 9 modelin HEIM ve PRISM kapsamasını tespit et (tamamlandı: [data/processed/coverage_matrix.md](data/processed/coverage_matrix.md))
 
 **Gün 2**
 - HEIM skor verilerini indir (sadece skorlar, görseller değil)
@@ -157,7 +159,7 @@ Router'ın üstünlüğünü kanıtlamak için:
 **Gün 4**
 - HEIM ve PRISM verilerini birleştirmek için master tablo tasarla
 - Skorları normalize et (0-100 aralığına)
-- 8 modelin master CSV'sini oluştur
+- 9 modelin master CSV'sini oluştur
 - Kapalı kaynak modellerin API fiyatlarını topla
 
 **Gün 5**
