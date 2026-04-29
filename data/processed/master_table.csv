@@ -1,0 +1,10 @@
+model,vendor,access_type,params_b,imagination,entity,text_rendering,style,affection,composition,long_text,overall,cost_usd,quality_per_usd
+SD1.5,Runway/CompVis,open,1.0,34.3,52.2,19.2,57.2,62.4,55.75,34.95,45.1,0.0023,19609.0
+SDXL,Stability,open,3.5,51.25,69.0,26.65,73.0,75.3,72.7,43.1,58.7,0.0046,12761.0
+SD3.5-Large,Stability,open,8.0,63.65,74.55,61.1,79.2,82.95,85.1,58.5,72.15,0.035,2061.0
+FLUX.1-schnell,Black Forest Labs,open,12.0,57.0,58.65,55.7,70.15,71.65,77.45,60.55,64.45,0.003,21483.0
+FLUX.1-dev,Black Forest Labs,open,12.0,62.65,68.6,59.45,74.9,84.55,84.2,63.35,71.1,0.03,2370.0
+Qwen-Image,Alibaba,open,20.0,68.05,74.15,63.05,86.05,85.25,88.5,74.15,77.0,0.04,1925.0
+DALL-E 2,OpenAI,closed,,,,,,,,,,0.02,
+GPT-Image-1,OpenAI,closed,,76.5,86.15,75.65,90.3,87.4,90.65,77.85,83.5,0.167,500.0
+Gemini2.5-Flash-Image,Google,closed,,75.0,82.75,74.1,89.65,88.3,90.1,79.75,82.85,0.039,2124.0

@@ -1,0 +1,10 @@
+model,vendor,access_type,params_b,cost_per_image_usd,cost_basis,cost_source
+SD1.5,Runway/CompVis,open,1.0,0.0023,Replicate H100 ~3s @ $0.001525/s,Replicate pricing 2026-04
+SDXL,Stability,open,3.5,0.0046,Replicate H100 ~3s,Replicate pricing 2026-04
+SD3.5-Large,Stability,open,8.0,0.035,Replicate L40S/H100 ~20-30s,Replicate pricing 2026-04 (estimated)
+FLUX.1-schnell,Black Forest Labs,open,12.0,0.003,Replicate official per-image,replicate.com/pricing 2026-04
+FLUX.1-dev,Black Forest Labs,open,12.0,0.030,Replicate official per-image,replicate.com/pricing 2026-04
+Qwen-Image,Alibaba,open,20.0,0.04,Replicate L40S/H100 ~60-90s estimated,Replicate pricing 2026-04 (estimated)
+DALL-E 2,OpenAI,closed,,0.020,Official 1024x1024,openai.com/api/pricing 2026-04
+GPT-Image-1,OpenAI,closed,,0.167,Official 1024x1024 High tier (PRISM benchmark used [High] variant),openai.com/api/pricing 2026-04
+Gemini2.5-Flash-Image,Google,closed,,0.039,Official 1024x1024 (1290 output tokens),ai.google.dev/gemini-api/docs/pricing 2026-04
