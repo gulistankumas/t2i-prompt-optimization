@@ -1,0 +1,15 @@
+mode,track,selected_model,quality,cost_usd,fallback,n_qualifying,all_qualifying
+economic,imagination,FLUX.1-dev,62.65,0.03,False,5,"FLUX.1-dev,SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+economic,entity,SDXL,69.0,0.0046,False,6,"SDXL,FLUX.1-dev,SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+economic,text_rendering,SD3.5-Large,61.1,0.035,False,4,"SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+economic,style,FLUX.1-schnell,70.15,0.003,False,7,"FLUX.1-schnell,SDXL,FLUX.1-dev,SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+economic,affection,SD1.5,62.4,0.0023,False,8,"SD1.5,FLUX.1-schnell,SDXL,FLUX.1-dev,SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+economic,composition,FLUX.1-schnell,77.45,0.003,False,7,"FLUX.1-schnell,SDXL,FLUX.1-dev,SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+economic,long_text,FLUX.1-schnell,60.55,0.003,False,5,"FLUX.1-schnell,FLUX.1-dev,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+premium,imagination,Gemini2.5-Flash-Image,75.0,0.039,False,2,"Gemini2.5-Flash-Image,GPT-Image-1"
+premium,entity,Gemini2.5-Flash-Image,82.75,0.039,False,2,"Gemini2.5-Flash-Image,GPT-Image-1"
+premium,text_rendering,GPT-Image-1,75.65,0.167,False,1,GPT-Image-1
+premium,style,SD3.5-Large,79.2,0.035,False,4,"SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+premium,affection,SDXL,75.3,0.0046,False,6,"SDXL,FLUX.1-dev,SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+premium,composition,FLUX.1-schnell,77.45,0.003,False,6,"FLUX.1-schnell,FLUX.1-dev,SD3.5-Large,Gemini2.5-Flash-Image,Qwen-Image,GPT-Image-1"
+premium,long_text,Gemini2.5-Flash-Image,79.75,0.039,False,2,"Gemini2.5-Flash-Image,GPT-Image-1"
