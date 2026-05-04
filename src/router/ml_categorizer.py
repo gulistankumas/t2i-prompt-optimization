@@ -23,7 +23,7 @@ _MODELS_DIR = Path(__file__).resolve().parents[2] / "models"
 
 
 class MLCategorizer:
-    def __init__(self, classifier: Literal["xgb", "lr"] = "xgb",
+    def __init__(self, classifier: Literal["lr", "xgb"] = "lr",
                  models_dir: Path | None = None):
         d = models_dir or _MODELS_DIR
         clf_path = d / f"track_classifier_{classifier}.pkl"
