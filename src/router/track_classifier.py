@@ -1,7 +1,14 @@
 """Kural tabanlı PRISM track sınıflandırıcı.
 
-Prompt -> 7 PRISM track'inden biri.
-Sıralı kontrol: spesifik kurallar önce, default 'entity' en sonda.
+v2: PRISM prompt'ları uzun yazıldığı için v1'in 25-kelime long_text eşiği
+diğer track sinyallerini boğuyordu. v2 kuralları:
+- text_rendering: tırnak (çift veya tek-büyük), 'the word', 'reads', 'written'
+- style: sanatçı/medium isimleri genişletildi
+- composition: uzamsal preposition'lar
+- imagination: yaratıcı/imkansız anahtar kelimeler genişletildi
+- affection: duygu/atmosfer kelimeleri genişletildi
+- long_text: SADECE 50+ kelime VE adım-adım talimat (first/then/step) işaret kelimesi
+- entity: default
 
 Tezde Lookup-rule router'ın kategorizer ayağı; LLM tabanlı sürümle (Gün 10)
 karşılaştırılacak.
@@ -16,57 +23,63 @@ PRISM_TRACKS_LIST = [
 ]
 
 _STYLE_KW = [
-    "style", "painting", "monet", "van gogh", "picasso", "cubist",
-    "cyberpunk", "anime", "oil painting", "watercolor", "sketch",
-    "impressionist", "renaissance", "abstract painting",
+    "style of", "painting", "monet", "van gogh", "picasso",
+    "cyberpunk", "anime", "oil painting", "watercolor",
+    "sketch", "illustration", "abstract art", "baroque",
+    "impressionist", "photographic",
 ]
 _COMPOSITION_KW = [
     "next to", "on top of", "beside", "behind",
     "in front of", "between", "under", "above",
-    "to the right of", "to the left of",
+    "to the left", "to the right", "arranged",
 ]
 _IMAGINATION_KW = [
     "surreal", "fantasy", "dream", "impossible",
-    "magical", "futuristic", "mythical", "ethereal",
-    "alternate", "parallel world",
+    "magical", "mythical", "ethereal", "made of",
+    "floating", "mythological", "unreal",
 ]
 _AFFECTION_KW = [
     "happy", "sad", "joyful", "lonely", "melancholic",
-    "cheerful", "sorrowful", "peaceful", "angry", "wistful",
+    "cheerful", "sorrowful", "peaceful", "angry",
+    "serene", "gloomy", "nostalgic", "tender",
+    "atmosphere", "mood", "feeling",
 ]
+_LONG_TEXT_MARKERS = ("first", "then", "finally", "step")
 
 
 def classify_track_rules(prompt: str) -> str:
-    """Kural sırası: text_rendering -> long_text -> style -> composition
-    -> imagination -> affection -> entity (default)."""
+    """v2 sıralama: text_rendering -> style -> composition -> imagination
+    -> affection -> long_text (50+ words AND step markers) -> entity (default)."""
     prompt_lower = prompt.lower()
     word_count = len(prompt.split())
 
-    # 1. text_rendering — tırnak içinde harfler, "text", "word", "letters"
-    if re.search(r'"[^"]+"', prompt) or any(
-        kw in prompt_lower for kw in ("text", "word", "letters", "inscription", "sign")
-    ):
+    # 1. text_rendering — tırnak veya açık metin işareti
+    if re.search(r'"[^"]+"', prompt):
+        return "text_rendering"
+    if re.search(r"'[A-Z][^']{2,}'", prompt):  # 'TOKYO' gibi caps-lock
+        return "text_rendering"
+    if "the word" in prompt_lower or "reads" in prompt_lower or "written" in prompt_lower:
         return "text_rendering"
 
-    # 2. long_text — 25+ kelime
-    if word_count >= 25:
-        return "long_text"
-
-    # 3. style
+    # 2. style
     if any(kw in prompt_lower for kw in _STYLE_KW):
         return "style"
 
-    # 4. composition — uzamsal ilişki
+    # 3. composition
     if any(kw in prompt_lower for kw in _COMPOSITION_KW):
         return "composition"
 
-    # 5. imagination — yaratıcı/imkansız
+    # 4. imagination
     if any(kw in prompt_lower for kw in _IMAGINATION_KW):
         return "imagination"
 
-    # 6. affection — duygu
+    # 5. affection
     if any(kw in prompt_lower for kw in _AFFECTION_KW):
         return "affection"
+
+    # 6. long_text — SADECE çok-koşullu uzun prompt
+    if word_count > 50 and any(m in prompt_lower for m in _LONG_TEXT_MARKERS):
+        return "long_text"
 
     # 7. default
     return "entity"

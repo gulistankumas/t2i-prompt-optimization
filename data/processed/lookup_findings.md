@@ -49,3 +49,28 @@ Track bazına accuracy:
 
 **Tez için sonuç:**
 > Rule-based classifier alt sınır baseline (text_rendering ve entity hariç pratikte yetersiz). LLM tabanlı kategorizer (Gün 10) **zorunlu**, "lüks" değil. Bu, tezin "üç router yaklaşımı karşılaştırması" bölümünde lookup-rule vs lookup-LLM kontrastını sayısal olarak güçlendirir.
+
+### Rule-based v2 (genişletilmiş kelime listeleri + revize long_text kuralı)
+
+Genel accuracy: **%36.3** (v1: %20.9 → +15.4 mutlak iyileşme).
+
+| Track | v1 | v2 | Δ |
+|---|:---:|:---:|:---:|
+| text_rendering | 77 | 83 | +6 |
+| entity | 41 | 66 | +25 |
+| style | 0 | 42 | +42 |
+| imagination | 6 | 29 | +23 |
+| composition | 0 | 25 | +25 |
+| affection | 0 | 9 | +9 |
+| long_text | 22 | 0 | -22 |
+
+**v2'nin çözdükleri:**
+- 25-kelime long_text eşiği kaldırıldı (artık 50-kelime + step markerı)
+- style/composition/imagination/affection için keyword listeleri genişletildi
+- text_rendering için tek-tırnak caps-lock pattern + "the word"/"reads"/"written" eklendi
+
+**v2'nin çözemedikleri:**
+- **long_text %0** — yeni kural ("50+ kelime + first/then/step") fazla sıkı; PRISM long_text prompt'ları çoğunlukla adım markerı içermiyor, sadece uzun anlatı. Confusion: 100/100 long_text → 46 text_rendering + 40 composition + 8 style + 1 affection + 3 entity + 2 imagination olarak predicted.
+- **affection %9** — PRISM affection prompt'ları açık duygu kelimesi yerine atmosferik tarif kullanıyor (gri gökyüzü, soluk ışık). Keyword tabanlı yakalama yetersiz.
+
+**Pratik tavan tahmini:** Rule-based bu görev için ~%40-45 (text_rendering ve entity sağlam, diğerleri en iyi ihtimalle %50). Tezde "Lookup-rule" router'ın **alt sınır baseline'ı** olarak konumlandırılır; "Lookup-LLM" zorunlu üst sınır.
