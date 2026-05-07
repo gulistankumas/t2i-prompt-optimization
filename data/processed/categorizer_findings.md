@@ -118,4 +118,66 @@ PRISM prompt'ları çoğunlukla **uzun ve betimleyici** (25+ kelime). Kısa kull
 
 XGBoost (`models/track_classifier_xgb.pkl`) kayıtlı kalır ama tezde **karşılaştırma noktası** olarak kullanılır — "yüksek kapasite + ezberleme = test'te kayıp" örneği.
 
-Default `MLCategorizer()` çağrısı XGB yüklüyor; bunu LR yapmak için `MLCategorizer(classifier="lr")` çağrılır. Sonraki Lookup-ML router implementasyonunda **`classifier="lr"` default olacak şekilde** kategorizer çağrılmalı (ya da MLCategorizer'ın default'u "lr" yapılır).
+`MLCategorizer()` default'u `"lr"` olarak güncellendi.
+
+---
+
+## Gün 11 — LLM Tabanlı Kategorizer (GPT-4o-mini, few-shot)
+
+**Pipeline:** OpenAI Chat API → GPT-4o-mini, system prompt + 7 few-shot örnek → tek-kelime track tahmini.
+**Modül:** [`src/router/llm_categorizer.py`](../../src/router/llm_categorizer.py)
+**Sanity test:** 9/10 hardcoded prompt'ta doğru.
+**140 prompt çalışma:** 115.5 saniye, ~$0.003 maliyet.
+
+### Test seti accuracy: **%72.9** (LR'den ~11 puan DÜŞÜK)
+
+Beklenenin tersine LLM, LR'yi geçemedi. Detaylı bakış:
+
+| Track | Rule v2 | LR + SBERT | LLM 4o-mini |
+|---|:---:|:---:|:---:|
+| affection | 10 | **100** | 100 |
+| imagination | 25 | 95 | **100** |
+| long_text | 0 | 75 | **100** |
+| text_rendering | 85 | 75 | **95** |
+| composition | 25 | **70** | 45 |
+| style | 50 | **100** | 45 |
+| entity | 65 | **70** | **25** |
+
+**LLM güçlü olduğu yerler (4 track'te ≥%95):** affection, imagination, long_text, text_rendering. Bu track'lerin **net dilsel sinyali** var — duygu kelimeleri, yaratıcı kombinasyonlar, çok-koşullu yapı, açık yazı işareti. LLM'in zero-shot kavraması bunlarda iyi.
+
+**LLM zayıf olduğu yerler:** entity (%25), composition/style (%45). Konfüzyon matrisi gösteriyor:
+- 20 entity prompt'u → sadece 5 doğru, kalan 15 başka track'lere dağıldı (4 affection, 4 long_text, 4 style, 2 composition, 1 imagination)
+- 20 style prompt'u → 9 doğru, 6'sı long_text'e kaydı
+- 20 composition prompt'u → 9 doğru, 5'i entity'ye 3'ü long_text'e kaydı
+
+### Niye LR > LLM (counter-intuitive ama gerekçeli)
+
+PRISM benchmark prompt'ları **çok betimleyicidir**: `entity` track'inde bile "an elephant" gibi kısa prompt yok, "a majestic Asian elephant standing in golden savanna grass at sunset, detailed wrinkles on its trunk" gibi zengin tanım var. Sonuç:
+
+- **LLM yorumcu eğilimi:** Prompt zenginse "bu artık 'sadece nesne' değil, daha sofistike bir kategori" diye yorumluyor → entity'yi atlayıp affection/style/long_text seçiyor. Genel insan-yorumcu mantığı çalışıyor ama PRISM'in özel kategori tanımları farklı.
+- **LR + SBERT avantajı:** Domain'in semantic uzayını **öğrendi**. PRISM "entity" prompt'larının ortak embedding pattern'lerini eşliyor — uzun, betimleyici de olsa entity'nin semantik fingerprint'ini tanıyor.
+
+**Bu, klasik supervised learning > zero-shot LLM örneklerinden biri** — özel domain tanımları olduğunda etiketli veriyle eğitilmiş model, genel pre-trained LLM'i geçer.
+
+### Tez İçin Ana Bulgu (üç kategorizer karşılaştırması)
+
+| Kategorizer | Test Acc | Eğitim | Inference | Maliyet (1k prompt) | Boyut |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Rule-based v2 | 37.1% | 0 | <1ms | $0 | — |
+| **LR + SBERT** ⭐ | **83.6%** | 4.4s | <5ms | $0 | 21 KB |
+| LLM (GPT-4o-mini) | 72.9% | 0 | ~500ms | ~$0.02 | API |
+
+Üç boyutta sıralama:
+- **Doğruluk:** LR > LLM > Rule
+- **Hız:** Rule > LR >>> LLM
+- **Maliyet:** Rule = LR < LLM
+- **Track tutarlılığı:** LR (5/7 track ≥%70), LLM (4/7 ≥%95 ama 3/7 ≤%50), Rule (2/7 ≥%65)
+
+**Tezin "Lookup-LLM router'ı zorunlu" iddiasının revizyonu:**
+> Domain-spesifik PRISM benchmark'ında, eğitilmiş hafif ML model (LR + SBERT) zero-shot LLM'i geçer. LLM'in avantajı **OOD (gerçek-dünya kısa prompt'lar) ve veri-az durumlar**'da öne çıkar; PRISM-style domain için LR yeterli ve daha verimli.
+
+Bu, tezde "Lookup-LR" ana router olur, "Lookup-LLM" karşılaştırma noktası kalır. Hibrit yaklaşım da düşünülebilir: LR baseline + LLM fallback (LR confidence <0.5 olunca).
+
+### Çıktılar
+- [`data/processed/test_predictions_3way.csv`](test_predictions_3way.csv) — 140 satır × {track, prompt, rule_pred, lr_pred, llm_pred}
+- [`figures/categorizer_3way_comparison.png`](../../figures/categorizer_3way_comparison.png) — track bazında bar chart
