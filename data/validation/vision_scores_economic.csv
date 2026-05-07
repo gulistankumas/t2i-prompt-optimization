@@ -1,0 +1,6 @@
+validation_id,role,model,track,alignment,aesthetic,avg_score
+val_01,eco_router,FLUX.1-schnell,style,93,96,94.5
+val_02,eco_router,SD1.5,affection,92,78,85.0
+val_03,eco_router,FLUX.1-schnell,composition,95,91,93.0
+val_04,eco_router,SD3.5-Large,text_rendering,97,92,94.5
+val_05,eco_router,SD3.5-Large,text_rendering,92,91,91.5

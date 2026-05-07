@@ -1,0 +1,11 @@
+validation_id,role,model,track,image_path,alignment,aesthetic,avg_score,raw,elapsed_s
+val_01,router,SD3.5-Large,style,data\validation\images\val_01_router_SD35-Large.png,94,97,95.5,"94,97",11.1
+val_01,baseline,FLUX.1-dev,style,data\validation\images\val_01_baseline_FLUX1-dev.png,93,91,92.0,"93,91",8.4
+val_02,router,SDXL,affection,data\validation\images\val_02_router_SDXL.png,95,92,93.5,"95,92",10.3
+val_02,baseline,FLUX.1-dev,affection,data\validation\images\val_02_baseline_FLUX1-dev.png,95,94,94.5,"95,94",7.7
+val_03,router,FLUX.1-schnell,composition,data\validation\images\val_03_router_FLUX1-schnell.png,92,88,90.0,"92,88",7.5
+val_03,baseline,FLUX.1-dev,composition,data\validation\images\val_03_baseline_FLUX1-dev.png,92,89,90.5,"92,89",4.4
+val_04,router,GPT-Image-1,text_rendering,data\validation\images\val_04_router_GPT-Image-1.png,98,92,95.0,"98,92",4.1
+val_04,baseline,FLUX.1-dev,text_rendering,data\validation\images\val_04_baseline_FLUX1-dev.png,97,91,94.0,"97,91",4.0
+val_05,router,GPT-Image-1,text_rendering,data\validation\images\val_05_router_GPT-Image-1.png,98,93,95.5,"98,93",3.9
+val_05,baseline,FLUX.1-dev,text_rendering,data\validation\images\val_05_baseline_FLUX1-dev.png,93,87,90.0,"93,87",2.9

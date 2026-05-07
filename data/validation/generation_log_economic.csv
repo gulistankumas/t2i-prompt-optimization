@@ -1,0 +1,6 @@
+validation_id,model,api,track,image_path,elapsed_s,cost_usd,status
+val_01,FLUX.1-schnell,replicate,style,data\validation\images\val_01_eco_router_FLUX1-schnell.png,4.7,0.003,OK
+val_02,SD1.5,replicate,affection,,0.0,0.0023,ERROR: 'SD1.5'
+val_03,FLUX.1-schnell,replicate,composition,data\validation\images\val_03_eco_router_FLUX1-schnell.png,6.1,0.003,OK
+val_04,SD3.5-Large,replicate,text_rendering,data\validation\images\val_04_eco_router_SD35-Large.png,12.3,0.035,OK
+val_05,SD3.5-Large,replicate,text_rendering,data\validation\images\val_05_eco_router_SD35-Large.png,11.4,0.035,OK
