@@ -261,11 +261,75 @@ Eğer gelecekte fallback tetiklenirse: "Bu kombinasyonda 75+ kalite eşiği zorl
 
 ---
 
-## 10. Hafta 3 İçin Bekleyen Analizler
+## 10. OOD Generalization Testi (Gün 14)
 
-- **OOD generalization testi (Gün 14):** 5 track'te eğit, 2 track'te test. Router'ların görmediği kategorilerde performans.
-- **Latency-quality trade-off detayı (Gün 14):** Router seçim kriteri olarak.
-- **Capability-min routing (opsiyonel, Gün 14):** Yedek hatırlatma mevcut.
+### 10.1 Setup
+
+- **In-distribution (5 track):** affection, composition, imagination, style, text_rendering
+- **OOD (2 track):** entity, long_text — Spearman korelasyonu en düşük çift (0.644), metodolojik olarak en zor transfer
+- Kategorizer 400 prompt × 5 track ile eğitildi (entity/long_text hiç görmedi)
+- Test: 100 in-dist + 40 OOD prompt
+
+### 10.2 OOD-LR kategorizer
+
+- Train accuracy: %96.8 (5 sınıf, 400 örnek)
+- In-dist test accuracy: %94.0 (sınıf sayısı 7→5 düştüğünden tüm sistem accuracy'sinin üstünde)
+
+### 10.3 OOD prompt tahmin dağılımı
+
+Router OOD prompt'larını yakın in-dist track'lere maple yebiliyor:
+
+| Gerçek track | En sık tahmin | Dağılım |
+|---|---|---|
+| entity (20) | composition (10) | composition 10, style 6, text_rendering 2, imagination 2 |
+| long_text (20) | style (9) | style 9, composition 5, text_rendering 4, affection 1, imagination 1 |
+
+Mantıklı eşlemeler: entity prompt'ları sahne tarif ettiği için composition'a, long_text prompt'ları uzun anlatı içerdiği için style'a kayıyor.
+
+### 10.4 In-dist vs OOD kalite düşüşü
+
+| Mode | In-dist Q | OOD Q | Düşüş | In-dist $ | OOD $ |
+|---|:---:|:---:|:---:|:---:|:---:|
+| economic | 65.50 | 60.12 | **−5.38** | $0.0132 | $0.0098 |
+| premium | 76.55 | 65.88 | **−10.67** | $0.0457 | $0.0423 |
+
+Premium modda OOD düşüşü 2x daha büyük (track-spesifiklik premium'da daha kritik). OOD maliyeti **daha düşük** çünkü yanlış mapping FLUX.1-schnell gibi ucuz modellere yönlendiriyor.
+
+### 10.5 OOD track bazında detay
+
+| Track × Mode | Kalite | Maliyet | En sık model |
+|---|:---:|:---:|---|
+| entity / eco | 61.23 | $0.0089 | FLUX.1-schnell (16/20) |
+| entity / premium | **68.58** ❌ | $0.0326 | FLUX.1-schnell (10/20) |
+| long_text / eco | **59.00** ❌ | $0.0107 | FLUX.1-schnell (14/20) |
+| long_text / premium | **63.17** ❌ | $0.0521 | SD3.5-Large (9/20) |
+
+❌ = eşik (60 eko / 75 premium) **karşılanmadı**. 4 OOD hücresinin 3'ünde kullanıcıya verilen kalite garantisi tutmuyor.
+
+### 10.6 Ek bulgu: in-distribution track içi varyans
+
+In-distribution track'ler arasında bile performans dağılımı geniştir:
+- Economic in-dist: text_rendering 56.8 (eşik altı), composition 76.9 (eşik üstü)
+- Premium in-dist: text_rendering 73.4 (eşik altı), composition 81.0 (eşik üstü)
+
+Bu, router'ın track-doğru tahmin etse bile lookup tablosundaki modelin o track'te yapısal sınırı olduğunu gösterir. T2I modellerinin text_rendering ve long_text gibi track'lerdeki zayıflıkları **"OOD problemi" değil, "yapısal kısıt"tır**.
+
+### 10.7 Tezde kullanım
+
+> "Router 5 in-dist track ile eğitildiğinde, görmediği 2 track'te (entity + long_text) ortalama 5.4 puan (eko) ve 10.7 puan (premium) kalite düşüşü gösterir. Premium modda 4 OOD hücresinin 3'ü kalite eşiğini karşılayamaz. Bu, router'ın **kategori-bağımlı genelleme sınırlarını** somutlaştırır. Ek olarak, in-dist track'ler arasında bile yapısal varyans (text_rendering 56-73 vs composition 76-81) gözlenmiştir; T2I model uzayının track-spesifik darboğazları routing'in üst sınırını koymaktadır — bu sınır kategorizer doğruluğundan bağımsızdır."
+
+### 10.8 Çıktılar
+- [`notebooks/21_ood_test.py`](../../notebooks/21_ood_test.py)
+- [`data/processed/ood_test_eval.csv`](ood_test_eval.csv) — 80 OOD karar (40 prompt × 2 mod)
+- [`figures/ood_test_results.png`](../../figures/ood_test_results.png) — eko + premium yan yana, in-dist mavi / OOD kırmızı
+
+---
+
+## Hafta 3 İçin Bekleyen Analizler
+
+- **Latency-quality trade-off detayı:** Router seçim kriteri olarak (Hafta 3 başı)
+- **Capability-min routing (opsiyonel):** Yedek hatırlatma mevcut, check-point sonrası karar
+- **Streamlit demo entegrasyonu:** Hafta 3 ana iş
 
 ---
 
